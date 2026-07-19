@@ -43,7 +43,7 @@ export const authenticate = async (
   }
 };
 
-// Restricts a route to specific roles, e.g. authorize("ADMIN")
+// Restrict route to specific roles, authorize("ADMIN")
 export const authorize = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
