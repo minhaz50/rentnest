@@ -15,7 +15,7 @@ const publicUserFields = {
   createdAt: true,
 };
 
-export const registerUser = async (input: RegisterInput) => {
+const registerUser = async (input: RegisterInput) => {
   const { name, email, password, phone, role } = input;
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -36,4 +36,32 @@ export const registerUser = async (input: RegisterInput) => {
   const token = signToken({ id: user.id, role: user.role, email: user.email });
 
   return { user, token };
+};
+
+const loginUser = async (input: LoginInput) => {
+  const { email, password } = input;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    throw new ApiError(401, "Invalid email or password.");
+  }
+
+  if (user.status === "BANNED") {
+    throw new ApiError(403, "Your account has been banned.");
+  }
+
+  const isPasswordCorrect = await comparePassword(password, user.password);
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Invalid email or password.");
+  }
+
+  const token = signToken({ id: user.id, role: user.role, email: user.email });
+
+  const { password: _removed, ...safeUser } = user;
+  return { user: safeUser, token };
+};
+
+export const authService = {
+  registerUser,
+  loginUser,
 };
