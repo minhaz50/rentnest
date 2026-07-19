@@ -61,7 +61,30 @@ const loginUser = async (input: LoginInput) => {
   return { user: safeUser, token };
 };
 
+const getCurrentUser = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: publicUserFields,
+  });
+  if (!user) throw new ApiError(404, "User not found.");
+  return user;
+};
+
+const updateCurrentUser = async (
+  userId: string,
+  data: { name?: string; phone?: string },
+) => {
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data,
+    select: publicUserFields,
+  });
+  return user;
+};
+
 export const authService = {
   registerUser,
   loginUser,
+  getCurrentUser,
+  updateCurrentUser,
 };

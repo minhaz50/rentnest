@@ -25,7 +25,23 @@ const login = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, data: result });
 });
 
+const getMe = catchAsync(async (req: Request, res: Response) => {
+  const user = await authService.getCurrentUser(req.user!.id);
+  res.status(200).json({ success: true, data: user });
+});
+
+const updateMe = catchAsync(async (req: Request, res: Response) => {
+  const { name, phone } = req.body;
+  const user = await authService.updateCurrentUser(req.user!.id, {
+    name,
+    phone,
+  });
+  res.status(200).json({ success: true, data: user });
+});
+
 export const authController = {
   register,
   login,
+  getMe,
+  updateMe,
 };
