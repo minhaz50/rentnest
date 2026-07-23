@@ -3,19 +3,19 @@ import cors from "cors";
 import morgan from "morgan";
 
 import authRoutes from "./modules/auth/auth.routes";
-import userRoutes from "./modules/user/user.routes";
-import categoryRoutes from "./modules/category/category.routes";
+import userRoutes from "./modules/user/user.route";
+import categoryRoutes from "./modules/category/category.route";
 import {
   publicPropertyRouter,
   landlordPropertyRouter,
   adminPropertyRouter,
-} from "./modules/property/property.routes";
+} from "./modules/property/property.route";
 import {
   rentalRouter,
   landlordRentalRouter,
   adminRentalRouter,
-} from "./modules/rental/rental.routes";
-import paymentRoutes from "./modules/payment/payment.routes";
+} from "./modules/rental/rental.route";
+import paymentRoutes from "./modules/payment/payment.route";
 import { stripeWebhook } from "./modules/payment/payment.controller";
 import reviewRoutes from "./modules/review/review.routes";
 
