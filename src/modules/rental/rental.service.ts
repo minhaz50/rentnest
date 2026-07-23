@@ -113,3 +113,43 @@ export const getLandlordRequests = async (
     orderBy: { createdAt: "desc" },
   });
 };
+
+export const updateRentalStatus = async (
+  id: string,
+  landlordId: string,
+  newStatus: RentalStatus,
+) => {
+  const request = await prisma.rentalRequest.findUnique({
+    where: { id },
+    include: { property: true },
+  });
+  if (!request) throw new ApiError(404, "Rental request not found.");
+  if (request.property.landlordId !== landlordId) {
+    throw new ApiError(403, "You do not manage this property.");
+  }
+
+  const allowedNext = ALLOWED_TRANSITIONS[request.status] || [];
+  if (!allowedNext.includes(newStatus)) {
+    throw new ApiError(
+      400,
+      `Cannot change status from ${request.status} to ${newStatus}.`,
+    );
+  }
+
+  return prisma.rentalRequest.update({
+    where: { id },
+    data: { status: newStatus },
+  });
+};
+
+export const getAllRentalRequests = async (status?: string) => {
+  return prisma.rentalRequest.findMany({
+    where: { ...(status && { status: status as any }) },
+    include: {
+      tenant: { select: { id: true, name: true, email: true } },
+      property: { select: { id: true, title: true, landlordId: true } },
+      payment: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};

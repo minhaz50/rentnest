@@ -48,3 +48,24 @@ export const getLandlordRequests = catchAsync(
     res.status(200).json({ success: true, data: requests });
   },
 );
+export const updateRentalStatus = catchAsync(
+  async (req: Request, res: Response) => {
+    const { status } = req.body;
+    if (!status) throw new ApiError(400, "status is required.");
+
+    const request = await rentalService.updateRentalStatus(
+      req.params.id as string,
+      req.user!.id,
+      status,
+    );
+    res.status(200).json({ success: true, data: request });
+  },
+);
+
+export const getAllRentalRequests = catchAsync(
+  async (req: Request, res: Response) => {
+    const { status } = req.query as { status?: string };
+    const requests = await rentalService.getAllRentalRequests(status);
+    res.status(200).json({ success: true, data: requests });
+  },
+);

@@ -19,6 +19,8 @@ rentalRouter.get("/:id", rentalController.getRentalRequestById);
 export const landlordRentalRouter = Router();
 landlordRentalRouter.use(authenticate, authorize("LANDLORD"));
 landlordRentalRouter.get("/", rentalController.getLandlordRequests);
+landlordRentalRouter.patch("/:id", rentalController.updateRentalStatus);
 
 export const adminRentalRouter = Router();
 adminRentalRouter.use(authenticate, authorize("ADMIN"));
+adminRentalRouter.get("/", rentalController.getAllRentalRequests);
