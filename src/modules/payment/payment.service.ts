@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { prisma } from "../../lib/prisma";
 import { ApiError } from "../../utils/ApiError";
 import { config } from "../../config";
+import { generateTransactionId } from "../../utils/generateTransactionId";
 
 const stripe = new Stripe(config.stripeSecretKey || "sk_test_placeholder", {
   apiVersion: "2024-06-20",
@@ -31,7 +32,7 @@ export const createPayment = async (
   }
 
   const amount = rentalRequest.property.price;
-  const transactionId = generateTransactionId(provider === "STRIPE");
+  const transactionId = generateTransactionId(provider);
 
   const payment = await prisma.payment.create({
     data: {
