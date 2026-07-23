@@ -9,4 +9,6 @@ router.use(authenticate, authorize("ADMIN"));
 
 router.get("/", userController.getAllUsers);
 
+router.patch("/:id", userController.updateUserStatus);
+
 export default router;

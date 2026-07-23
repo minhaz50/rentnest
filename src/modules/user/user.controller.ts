@@ -9,6 +9,19 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, data: users });
 });
 
+const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!["ACTIVE", "BANNED"].includes(status)) {
+    throw new ApiError(400, "status must be ACTIVE or BANNED.");
+  }
+
+  const user = await userService.updateUserStatus(id as string, status);
+  res.status(200).json({ success: true, data: user });
+});
+
 export const userController = {
   getAllUsers,
+  updateUserStatus,
 };
